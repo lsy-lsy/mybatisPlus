@@ -1,0 +1,85 @@
+<!DOCTYPE HTML>
+<html lang="zxx">
+
+<head>
+	<title>Home</title>
+	<!-- Meta-Tags -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/layui/css/layui.css">
+	<meta charset="utf-8">
+	<meta name="keywords" content="">
+	<script>
+		addEventListener("load", function () {
+			setTimeout(hideURLbar, 0);
+		}, false);
+
+		function hideURLbar() {
+			window.scrollTo(0, 1);
+		}
+	</script>
+	<!-- //Meta-Tags -->
+	<!-- Stylesheets -->
+	<link href="/css/StudentStyle.css" rel='stylesheet' type='text/css' />
+	<link href="/css/StudentStyle.css" rel='stylesheet' type='text/css' />
+	<!--// Stylesheets -->
+	<!--online fonts-->
+	<!--<link href="http://fonts.googleapis.com/css?family=Catamaran:100,200,300,400,500,600,700,800,900" rel="stylesheet">-->
+	<!--//online fonts-->
+</head>
+
+<body>
+	<h1>学生登陆界面</h1>
+	<div class="w3ls-login box">
+		<img src="/images/logo1.png" style="height:600px;" alt="logo_img" />
+		<!-- form starts here -->
+		<form class="layui-form">
+			<div class="layui-form-item">
+				<input class="layui-input" name="useLoginName" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
+			</div>
+			<div class="layui-form-item">
+				<input class="layui-input" name="usePwd" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
+			</div>
+			<div class="layui-btn-div">
+				<button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+				<a href="/index/register" style="color: white">注册</a>
+			</div>
+		</form>
+	</div>
+	<!-- //form ends here -->
+	<!--copyright-->
+	<div class="copy-wthree">
+		<p>Copyright &copy; 2019.Company name All rights reserved></p>
+	</div>
+	<!--//copyright-->
+</body>
+<script type="text/javascript" src="/layui/layui.js"></script>
+	<!--<script type="text/javascript" src="/js/login.js"></script>-->
+	<script>
+        layui.config({
+            base : "js/"
+        }).use(['form','layer'],function(){
+            var form = layui.form;
+            // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+            $ = layui.jquery;
+
+            //登录按钮事件
+            form.on("submit(login)",function(data){
+                $.ajax({
+                    url:'/index/login',
+                    data:data.field,
+                    type:'post',
+                    success:function (result) {
+                        if (result.success){
+                            layer.msg("登陆成功！");
+                            location.href = "/index/in?id="+result.obj.id;
+                        }else{
+                            layer.msg(result.message);
+                        }
+                    }
+                })
+                return false;
+            })
+        })
+
+	</script>
+</html>

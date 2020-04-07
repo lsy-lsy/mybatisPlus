@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:include="admin/common/head"></head>
+<body>
+	<div class="video_mask"></div>
+	<div class="login">
+	    <h1>video_后台管理登录</h1>
+	    <form class="layui-form">
+	    	<div class="layui-form-item">
+				<input class="layui-input" name="adm_name" placeholder="用户名" lay-verify="required" type="text" autocomplete="off">
+		    </div>
+		    <div class="layui-form-item">
+				<input class="layui-input" name="adm_pwd" placeholder="密码" lay-verify="required" type="password" autocomplete="off">
+		    </div>
+		    <!--<div class="layui-form-item form_code">-->
+				<!--<input class="layui-input" name="code" placeholder="验证码" lay-verify="required" type="text" autocomplete="off">-->
+				<!--<div class="code"><img src="/images/code.jpg" width="116" height="36"></div>-->
+		    <!--</div>-->
+			<button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+		</form>
+	</div>
+	<script type="text/javascript" src="/layui/layui.js"></script>
+	<!--<script type="text/javascript" src="/js/login.js"></script>-->
+	<script>
+        layui.config({
+            base : "js/"
+        }).use(['form','layer'],function(){
+            var form = layui.form;
+            // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+            $ = layui.jquery;
+            // //video背景
+            // $(window).resize(function(){
+            // 	if($(".video-player").width() > $(window).width()){
+            // 		$(".video-player").css({"height":$(window).height(),"width":"auto","left":-($(".video-player").width()-$(window).width())/2});
+            // 	}else{
+            // 		$(".video-player").css({"width":$(window).width(),"height":"auto","left":-($(".video-player").width()-$(window).width())/2});
+            // 	}
+            // }).resize();
+
+
+            //登录按钮事件
+            form.on("submit(login)",function(data){
+                $.ajax({
+                    url:'/admin/toLogin',
+                    data:data.field,
+                    type:'post',
+                    success:function (result) {
+                        if (result.success){
+                            layer.msg(result.message);
+                            location.href = "/admin/index";
+                        }else{
+                            layer.msg(result.message);
+                        }
+                    }
+                })
+                return false;
+            })
+        })
+
+	</script>
+</body>
+</html>

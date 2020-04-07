@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="height: 800px;margin-top: 50px;">
+            <fieldset class="layui-elem-field">
+                <legend>用户管理 - 新增课程</legend>
+                <div class="layui-field-box">
+                    <div style="margin-left: 150px;">
+                        <form class="layui-form">
+
+                            <input name="uId" type="hidden" th:value="${uId}">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">编程等级</label>
+                                <div class="layui-input-inline">
+                                    <select  name="catalog1Id" lay-filter="cat1Name">
+                                        <option value=""></option>
+                                        <option id="cat1" th:each="catalogs:${catalog1List}" th:value="${catalogs.id}" th:text="${catalogs.cat1Name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">系列课程</label>
+                                <div class="layui-input-inline">
+                                    <select  id="catalog2Id"  name="catalog2Id" lay-filter="teaName" >
+                                        <option value="" >请先选择编程等级</option>
+                                        <!--<option id="cat2"></option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">选择教师</label>
+                                <div class="layui-input-inline">
+                                    <select  id="teaId"  name="teaId" lay-filter="filterteaName" >
+                                        <option value="" >请先选择系列课程</option>
+                                        <!--<option id="cat2"></option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/user/saveCat2',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+                        layer.msg(result.message + "正在刷新列表..");
+                        //刷新父页面
+                        setTimeout("window.parent.location.reload()", 1200 );
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            })
+            return false;
+        });
+
+        //根据一级目录查询发布的教师
+        form.on('select(cat1Name)', function(data) {
+            console.log(data.value); //得到被选中的值
+            $.post("/getCatalog2?id=" + data.value, function (data) {
+                if (data != null) {
+                    var content = '<option value="">选择二级分类</option>';
+                    $.each(data, function (i, val) {
+                        // console.log(i + "-" + val.chapterName);
+                        content += '<option  value="' + val.id + '">' + val.cat2Name + '</option>';
+                    });
+                    var s = $('#catalog2Id');
+                    s.html(content);
+                }
+                form.render('select');///重新渲染select#chapterId
+                // $('.cat2Name').reload();
+            })
+        })
+
+
+        //根据二级目录查询发布的教师
+        form.on('select(teaName)', function(data) {
+            console.log(data.value); //得到被选中的值
+            $.post("/catalog2/getCatalog2Teacher?id=" + data.value, function (data) {
+                if (data != null) {
+                    var content = '<option value="">选择二级分类</option>';
+                    $.each(data, function (i, val) {
+
+                        for(var key in val){ //第一层循环取到各个list
+                            var List = val[key];
+                            for(var teacher in List){ //第二层循环取list中的对象
+                                content += '<option  value="' + List[teacher ].id + '">' + List[teacher ].teaName + '</option>';
+                            }
+                        }
+
+                    });
+                    console.log(content);
+                    var s = $('#teaId');
+                    s.html(content);
+                }
+                form.render('select');///重新渲染select#chapterId
+                // $('.cat2Name').reload();
+            })
+        })
+
+    })
+
+</script>
+</body>
+</html>

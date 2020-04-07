@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>视频详情页</title>
+	<link rel="stylesheet" type="text/css" href="/index/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/index.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/info.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/ckin.css">
+	<link rel="stylesheet" type="text/css" href="/layui/css/layui.css">
+	<link rel="stylesheet" href="/layui/css/layui.css" media="all">
+	<script type="text/javascript" src="/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/layui/layui.js"></script>
+	<script type="text/javascript" src="/index/js/jquery.min.js"></script>
+	<!--<script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>-->
+	<script type="text/javascript" src="/index/js/bootstrap.min.js"></script>
+	<style>
+		.heading {
+		background-color: #000;
+		padding: 5px 14px;
+		border-radius: 5px;
+		display: inline-block;
+		margin-bottom: 20px;
+	}
+	.heading h4 {
+		color: #fff;
+		font-size: 14px;
+		margin: 0;
+	}
+	</style>
+</head>
+<body>
+
+<head th:include="index/common">
+<div class="container" style="margin-top: 50px;">
+	<div class="row flexbox">
+		<div id="main-content" class="col-md-8">
+			<div class="fanhui">
+				<a href="#"><i class="fa fa-arrow-left" aria-hidden="true"></i>
+					返回课程</a>
+			</div>
+			<ul id="myTab" class="nav nav-tabs nav-container">
+				<li class="active">
+					<a href="#home" data-toggle="tab">
+						视频
+					</a>
+				</li>
+				<li><a href="#ios" onclick="zycy()" data-toggle="tab">章节测验</a></li>
+			</ul>
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane fade in active" id="home" >
+					<div class="kechentitle" >
+						<h4 th:text="${video.vidName}">视频标题</h4>
+					</div>
+					<div class="wrap-vid" style="position: relative;">
+						<div id="dati" style="position:absolute;top:0;left:0;width: 100%;height: 100%;color:#eee;background: rgba(0,0,0,0.5);z-index: 999;display: none;padding: 20px;">
+							<!--选择题-->
+
+							题目：<p style="text-indent: 2em;" id="judges" th:text="${video.vidJudge}"></p>
+							<div class="layui-form-item">
+								<label class="layui-form-label">请判断</label>
+								<div class="layui-input-block" style="padding-top: 8px;margin-left: -10px;">
+									<label style="font-weight: normal;">对：</label>
+									<input type="radio" name="right" value="1" title="对">
+									<label style="font-weight: normal;">错：</label>
+									<input type="radio" name="right" value="0" title="错">
+								</div>
+							</div>
+							<input th:value="${video.vidRight}" id="vidRight" type="hidden">
+							<input th:value="${video.vidPopupTime}" id="vidPopuptime" type="hidden">
+
+							<button class="btn btn-default" th:onclick="'javascript:judge()'">确定</button>
+
+						</div>
+
+						<section class="demo-section demo-section--light" id="demo">
+							<video id="ckin" th:src="${video.vidVideoUrl}" 	 data-ckin="default" data-overlay="1" data-title=""></video>
+						</section>
+						<!--<video  th:src="${video.vidVideoUrl}"></video>-->
+						<script type="text/javascript" src="js/ckin.js"></script>
+						<input type="hidden" id="zycy" th:value="${video.id}">
+					</div>
+					<a th:href="${video.vidDatumUrl}">资料下载</a>
+				</div>
+					<div class="tab-pane fade" id="ios" >
+						<from id="froms" class="layui-form">
+						</from>
+					</div>
+			</div>
+
+		</div>
+
+		<div id="sidebar" class="col-md-4" th:each="cat2 : ${catalog2List}">
+			<div class="heading">
+				<h4><i class="fa fa-bars" aria-hidden="true"></i> 课程列表</h4>
+			</div>
+			<div class="content" style="height: 480px;overflow: auto;">
+			<div class="widget wid-post"  th:each="vid : ${cat2.videoList}">
+					<div class="post wrap-vid" >
+						<div class="zoom-container" >
+							<div class="zoom-caption">
+								<span >视频分类</span>
+								<a href="#ckin">
+									<i class="fa fa-play-circle-o fa-5x" style="color: #fff"></i>
+								</a>
+								<p >视频名称</p>
+							</div>
+						</div>
+						<div class="wrapper" >
+							<h5 class="vid-name" ><a id="aVideo" th:onclick="'javascript:vidVrl(\''+${vid.id}+'\')'"   th:text="${vid.vidName}">视频名称</a></h5>
+							<div class="info">
+								<h6 >讲师： <a href="#" th:each="tea : ${cat2.teacherList}" th:text="${tea.teaName}">Kelvin</a></h6>
+								<!--  <span><i class="fa fa-calendar"></i>25/3/2015</span>
+                                 <span><i class="fa fa-heart"></i>1,200</span> -->
+							</div>
+						</div>
+					</div>
+				<div class="line"></div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
+	<div th:include="index/bottom"/>
+
+</body>
+</html>
+
+
+<script>
+	// 表单提交
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/index/saveAnswerUserValue',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+
+                        layer.msg(result.message + "正在刷新页面..");
+                        //刷新父页面
+                        setTimeout("window	.location.reload()", 1200 );
+                    }else{
+                        layer.msg(result.message);
+                        if(result.message == "每个视频不能有相同的题目!"){
+                            $('#topName').focus();
+                        }
+                    }
+                }
+            })
+            return false;
+        })
+    })
+</script>
+<script>
+
+
+        //点击获取视频
+        function vidVrl(id){
+             var account = id;
+            var dati = document.getElementById("dati");
+            var vidPopuptime1 = document.getElementById("vidPopuptime");
+            // vidPopuptime1.value('123');
+            // dati.innerHTML = "";
+             $.ajax({
+                 url: '/index/video',
+                 data: {id:account},
+                 type: 'post',
+                 success: function (result) {
+                     if (result.success) {
+                         document.getElementById('ckin').src = result.obj.vidVideoUrl;
+                         document.getElementById('zycy').value = result.obj.id;
+                         document.getElementById("vidRight").value=result.obj.vidRight;
+                         document.getElementById("vidPopuptime").value=result.obj.vidPopupTime;
+                         document.getElementById("judges").innerHTML=result.obj.vidJudge;
+                     } else {
+                         layer.msg(result.message);
+                     }
+                 }
+             })
+         }
+         //ajax获取视频的课题
+        function zycy(){
+            var vId = document.getElementById('zycy').value;
+			var uId = document.getElementById('useId').value;
+
+			//题目序列
+			var varI = 1;
+            var sunii = new Number(0);
+
+            froms.innerHTML = "";
+            console.log(vId);
+            console.log(uId);
+            $.ajax({
+                url: '/index/getTopic',
+                data: {uId:uId,
+                    	vId:vId},
+                type: 'post',
+                success: function (result) {
+
+                    if (result.success) {
+                        var span  = "<input id='uId' name='uId' type='hidden' >";
+                        froms.innerHTML += span;
+
+                        for(var i in result.data){
+                           // alert(result.data[i].topUseValue.useAnswer);
+                            // console.log(result.data[i].topUseValue.useAnswer);
+                            var  useAnswer =result.data[i].topUseValue.useAnswer;
+							var ansParse =result.data[i].answer.ansParse;
+							if(useAnswer==null){
+                                useAnswer ="未选择";
+                                ansParse = "";
+							}
+                            //判断是否正确
+							var ii =0;
+
+							if(result.data[i].topUseValue.useAnswer == result.data[i].answer.ansCorrect){
+                                ii =25;
+                                sunii+=parseInt(25);
+							}else {
+                                ii =0;
+							}
+
+                            var iosHtml ='<div class="icon">\n' +
+                                '\t\t\t\t\t<div class="title">\n' +
+                                '\t\t\t\t\t\t<h3>'+varI +"."+ +'' +
+                                '\t\t\t\t\t\t</h3>\n' +
+                                '\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t<div class="timu">\n' +
+                                '\t\t\t\t\t\t<div class="zytitle">\n' +
+                                '\t\t\t\t\t\t\t<div style="width:80%;height:100%;float:left;">' +
+                                '\t\t\t\t\t\t\t<p>【单选题】'+result.data[i].topName+ '</p>\n' +
+                                '\t\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t\t<div style="clear:	 both;width:  0px;height: 0px;"></div>\n' +
+                                '\t\t\t\t\t\t<ul class="zyul">\n' +
+                                '\t\t\t\t\t\t<input type="hidden" name="topId'+varI+'" value="'+result.data[i].id+'">\n' +
+                                // th:checked="${check}=='1'"
+								'\t\t\t\t\t\t\t\t<li class ="zyul_li"><input type="radio" class="ansCorrect" name="ansCorrect'+varI+'" style="display: inline"  value="A" title="A" ><a href="#">1.'+result.data[i].answer.a+ '</a></li>\n' +
+                                '\t\t\t\t\t\t\t<li class ="zyul_li"><input type="radio" class="ansCorrect" name="ansCorrect'+varI+'" style="display: inline"  value="B" title="B" ><a href="#">2.'+result.data[i].answer.b+'</a></li>\n' +
+                                '\t\t\t\t\t\t\t<li class ="zyul_li"><input type="radio" class="ansCorrect" name="ansCorrect'+varI+'" style="display: inline"   value="C" title="C" ><a href="#">3.'+result.data[i].answer.c+'</a></li>\n' +
+                                '\t\t\t\t\t\t\t<li class ="zyul_li"><input type="radio" class="ansCorrect" name="ansCorrect'+varI+'" style="display: inline"  value="D" title="D" ><a href="#">4.'+result.data[i].answer.d+'</a></li>\n' +
+                                '\t\t\t\t\t\t</ul>\n' +
+                                '\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t<div class="answer">\n' +
+                                '\t\t\t\t\t\t<span >我的答案：'+  useAnswer +'</span >\n' +
+                                '\t\t\t\t\t\t<br><span style="color: red">答案解析：'+  ansParse +'</span >\n' +
+                                '\t\t\t\t\t\t<i class="fr dui"></i>\n' +
+                                '\t\t\t\t\t\t<span style="font-size:14px;top:25px;float:right;">得分：\n' +
+                                '\t\t\t\t\t\t<span style="color:#db2727;">'+ii+'</span>\n' +
+                                '\t\t\t\t\t</span>\n' +
+                                '\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t</div>'
+
+                            varI++;
+                            froms.innerHTML+=iosHtml;
+							if(result.data[i].topUseValue.useAnswer!=null){
+								var zyul_li = document.getElementsByClassName('zyul_li');
+								var ansCorrect = document.getElementsByClassName('ansCorrect');
+								for(var i in ansCorrect){
+									// alert(ansCorrect);
+									ansCorrect[i].type="hidden";
+								}
+                            }
+                        }
+                        if(result.data[0].topUseValue.useAnswer==null) {
+                            var fromSixeix = " <button style='margin-top: 1em;' class=\"layui-btn\" lay-submit lay-filter=\"formDemo\">立即提交</button>\n" +
+                                "\t\t\t\t\t\t\t<button style='margin-top: 1em;' type=\"reset\" class=\"layui-btn layui-btn-primary\">重置</button>";
+                            froms.innerHTML += fromSixeix;
+                            var uIdInput = document.getElementById("uId");
+                            uIdInput.value = uId;
+                        }
+                        var sum = '<span style="margin-top:5px;font-size:20px;top:25px;float:right;">总得分：' + sunii;
+                        froms.innerHTML += sum;
+                    } else {
+                    }
+                }
+            })
+        }
+        var video=document.getElementById('ckin');
+        var dati = document.getElementById('dati');
+        var time ;
+        var inter=setInterval(function(){
+            var vidPopuptime = document.getElementById("vidPopuptime").value;
+            console.log(vidPopuptime);
+			time=video.currentTime;
+            if(time>=vidPopuptime){
+                video.pause();
+                clearInterval(inter);
+                askQuestion();
+            }
+        },1000);
+        function askQuestion(){
+			dati.style.display = "block";
+        }
+
+
+        function judge() {
+            var vidRight = document.getElementById("vidRight").value;
+            var dati = document.getElementById('dati');
+            var obj = document.getElementsByName("right");
+            var objvalue ;
+            for(var i=0; i<obj.length; i ++){
+                if(obj[i].checked){
+                    objvalue = (obj[i].value);
+                }
+            }
+            if(objvalue == vidRight){
+                video.play();
+                alert("选择正确！");
+                dati.style.display = "none";
+                time =0;
+            }else {
+                alert("选择错误！");
+            }
+
+        }
+</script>

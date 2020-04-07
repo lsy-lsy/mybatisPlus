@@ -1,0 +1,78 @@
+.fanhui{
+	height: 60px;
+	line-height: 60px;
+}
+.fanhui a{
+	color: #333;
+	text-decoration: none;
+}
+.kechentitle{
+	margin: 10px 0;
+	text-align: center;
+}
+.flexbox{
+    display: flex;
+}
+#sidebar{
+    flex: 1;
+}
+#main-content{
+    flex: 2;
+}
+#sidebar,#main-content {
+    border-right: 1px solid #bbb;
+    border-top: 1px solid #bbb;
+    padding: 20px;
+}
+#main-content {
+    border-left: 1px solid #bbb;
+}
+.widget .heading {
+    background-color: #000;
+    padding: 5px 14px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.widget .heading h4 {
+    color: #fff;
+    font-size: 14px;
+    margin: 0;
+}
+.post img {
+    float: left;
+    max-width: 140px;
+    display: inline-block;
+}
+.post .zoom-container .zoom-caption p {
+    font-size: 15px;
+    padding: 4px;
+}
+.post .wrapper {
+    display: inline-block;
+    text-align: left;
+    margin-left: 10px;
+}
+.post:after, .post:before {
+    clear: both;
+    content: '\0020';
+    display: block;
+    visibility: hidden;
+    width: 0;
+    height: 0;
+}
+.line {
+    border-bottom: 1px solid #bbb;
+    width: 100%;
+    margin: 20px 0;
+}
+.zyul_li{
+    margin:1em 0;
+}
+.title>h3{
+    color: red;
+    line-height:2em;
+}
+.timu{
+    padding-left: 1em;
+}

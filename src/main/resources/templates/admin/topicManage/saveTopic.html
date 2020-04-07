@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="height: 800px;">
+            <fieldset class="layui-elem-field">
+                <legend>课题管理 - 添加课题</legend>
+                <div class="layui-field-box">
+                    <div>
+                        <form class="layui-form">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">一级分类</label>
+                                <div class="layui-input-inline">
+                                    <select  name="cat1Name" lay-filter="cat1Name">
+                                        <option value=""></option>
+                                        <option id="cat1" th:each="catalogs:${catalog1List}" th:value="${catalogs.id}" th:text="${catalogs.cat1Name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">二级分类</label>
+                                <div class="layui-input-inline">
+                                    <select  id="catalog2Id"  name="catalog2Id" lay-filter="catalog2Id" >
+                                        <option value="" >请先选择一级分类</option>
+                                        <!--<option id="cat2"></option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">选择视频</label>
+                                <div class="layui-input-inline">
+                                    <select  id="vidId"  name="vidId" lay-filter="vidIdList" >
+                                        <option value="" >请先选择二级分类</option>
+                                        <!--<option id="cat2"></option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入课题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="topName" name="topName" required  lay-verify="required" placeholder="输入课题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案A</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="A" required lay-verify="required" placeholder="输入答案A" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案B</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="B" required lay-verify="required" placeholder="输入答案B" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案C</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="C" required lay-verify="required" placeholder="输入答案C" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案D</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="D" required lay-verify="required" placeholder="输入答案D" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">选择正确答案</label>
+                                <div class="layui-input-inline">
+                                    <select  id="1"  name="ansCorrect" lay-filter="filterCat2Name" >
+                                        <option value="" >选择正确答案</option>
+                                        <option value="A" >A</option>
+                                        <option value="B" >B</option>
+                                        <option value="C" >C</option>
+                                        <option value="d" >D</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">答案解析</label>
+                                <div class="layui-input-block">
+                                    <textarea name="ansParse" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/topic/save',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+
+                        layer.msg(result.message + "正在刷新列表..");
+                        //刷新父页面
+                        setTimeout("window.parent.location.reload()", 1200 );
+                    }else{
+                        layer.msg(result.message);
+                        if(result.message == "每个视频不能有相同的题目!"){
+                            $('#topName').focus();
+                        }
+                    }
+                }
+            })
+            return false;
+        })
+        form.on('select(cat1Name)', function(data){
+            console.log(data.value); //得到被选中的值
+            $.post("/getCatalog2?id="+data.value,function (data) {
+                if(data!=null){
+                    var content = '<option value="">选择二级分类</option>';
+                    $.each(data,function (i,val) {
+                        // console.log(i + "-" + val.chapterName);
+                        content += '<option  value="' + val.id + '">' + val.cat2Name + '</option>';
+                    });
+                    console.log(content);
+                    var s = $('#catalog2Id');
+                    s.html(content);
+                    console.log(s);
+                    console.log(s.html());
+
+                }
+                form.render('select');///重新渲染select#chapterId
+                // $('.cat2Name').reload();
+            });
+        });
+        //二级目录下的视频videoList
+        form.on('select(catalog2Id)', function(data){
+            console.log(data.value); //得到被选中的值
+            $.post("/video/getCat2VideoList?id="+data.value,function (data) {
+                if(data!=null){
+                    var content = '<option value="">选择二级分类</option>';
+                    $.each(data,function (i,val) {
+                        // console.log(i + "-" + val.chapterName);
+                        content += '<option  value="' + val.id + '">' + val.vidName + '</option>';
+                    });
+                    console.log(content);
+                    var s = $('#vidId');
+                    s.html(content);
+                    console.log(s);
+                    console.log(s.html());
+
+                }
+                form.render('select');///重新渲染select#chapterId
+                // $('.cat2Name').reload();
+            });
+        });
+    })
+
+</script>
+</body>
+</html>

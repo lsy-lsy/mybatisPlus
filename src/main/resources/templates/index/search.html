@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>所有课程</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/myindex.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/layui/layui.js"></script>
+</head>
+<body>
+
+<head th:include="index/common">
+	<div class="container" style="margin-top:50px;display: flex;">
+		<div class="con-left">
+			<ul class="list-group" style="margin-top: 40px;padding-left: 30px;" >
+				<a href=""><li class="list-group-item">全部</li></a>
+				<div th:each="cat:${catalog1}">
+					<a href="#"><li id="liValue" th:onclick="'javascript:vidVrl(\''+${cat.id}+'\')'" th:text="${cat.cat1Name}" class="list-group-item"></li></a>
+				</div>
+			</ul>
+		</div>
+		<div class="con-right">
+			<div class="header-title">
+				<h2>所有课程</h2>
+			</div>
+			<div class="box-content rightbox">
+				<div id="row" class="row">
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="index/bottom"/>
+
+</body>
+<script>
+        function add(cat2Id,teaId){
+            var add = confirm("确定报名此课程吗？");
+			var useId = document.getElementById("useId").value;
+            var teaId = teaId;
+            var cat2Id = cat2Id;
+            if (add) {
+                $.ajax({
+                    url: '/index/saveCata2TeacherUser',
+                    data: {useId:useId,teaId:teaId,cat2Id:cat2Id},
+                    type: 'post',
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message + "正在刷新跳转..");
+                            //刷新父页面
+                            window.location.href = "/index/myindex?useId="+useId;
+                        } else {
+                            alert("已存在该老师课程，请勿重新报名！");
+                        }
+                    }
+                })
+            }else{
+                return false;
+            }
+        }
+
+    // 初始化内容
+    window.onload=function(){
+        $.ajax({
+            url: '/index/getCat1Cata2logAll',
+            type: 'post',
+            success: function (result) {
+
+                if (result.success) {
+                    // result.obj
+                    for(var i in result.data) {
+                        var rowHtml = '\<div class="col-md-4">\n' +
+                            '\t\t\t\t\t\t<div class="wrap-vid">\n' +
+                            '\t\t\t\t\t\t    <div class="zoom-container">\n' +
+                            '\t\t\t\t\t\t        <div class="zoom-caption" >\n' +
+                            '\t\t\t\t\t\t            <span >精选课程</span>\n' +
+                            '\t\t\t\t\t\t            <a href="javascript:;" onclick="add(\''+result.data[i].id+"','" +  result.data[i].teacher.id +'\')">\n' +
+                            '\t\t\t\t\t\t            <i class="fa fa-plus-circle fa-5x" style="color: #fff"></i>\n' +
+                            '\t\t\t\t\t\t            </a>\n' +
+                            '\t\t\t\t\t\t            <p >' + result.data[i].cat2Name + '</p>\n' +
+                            '\t\t\t\t\t\t        </div>\n' +
+                            '\t\t\t\t\t\t        <img style="width: 270px;height: 152px;" src="' + result.data[i].cat2Img + '">\n' +
+                            '\t\t\t\t\t\t    </div>\n' +
+                            '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#"></a></h3>\n' +
+                            '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#">' + result.data[i].cat2Name+ '</a></h3>\n'+
+                            '\t\t\t\t\t\t    <div class="info">\n' +
+                            '\t\t\t\t\t\t        <h5> 讲师： <a id="teaName" href="#">' + result.data[i].teacher.teaName + '</a></h5>\n' +
+                            '\t\t\t\t\t\t    </div>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t</div>\n';
+
+                        row.innerHTML += rowHtml;
+                    }
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        })
+    }
+
+
+
+    //点击获取视频
+    function vidVrl(id){
+        var account = id;
+        var row = document.getElementById("row");
+        row.innerHTML = "";
+        $.ajax({
+            url: '/index/getCat1Cata2log',
+            data: {id:account},
+            type: 'post',
+            success: function (result) {
+
+                if (result.success) {
+                    // result.obj
+					for(var i in result.data) {
+
+                            var rowHtml = '\<div class="col-md-4">\n' +
+                                '\t\t\t\t\t\t<div class="wrap-vid">\n' +
+                                '\t\t\t\t\t\t    <div class="zoom-container">\n' +
+                                '\t\t\t\t\t\t        <div class="zoom-caption" >\n' +
+                                '\t\t\t\t\t\t            <span >精选课程</span>\n' +
+                                '\t\t\t\t\t\t             <a href="javascript:;" onclick="add(\''+result.data[i].id+"','" +  result.data[i].teacher.id +'\')">\n' +
+                                '\t\t\t\t\t\t                <i class="fa fa-plus-circle fa-5x" style="color: #fff"></i>\n' +
+                                '\t\t\t\t\t\t            </a>\n' +
+                                '\t\t\t\t\t\t            <p >' + result.data[i].cat2Name + '</p>\n' +
+                                '\t\t\t\t\t\t        </div>\n' +
+                                '\t\t\t\t\t\t        <img style="width: 270px;height: 152px;" src="' + result.data[i].cat2Img + '">\n' +
+                                '\t\t\t\t\t\t    </div>\n' +
+                                '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#"></a></h3>\n' +
+                                '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#">' + result.data[i].cat2Name + '</a></h3>\n'+
+                                '\t\t\t\t\t\t    <div class="info">\n' +
+                                '\t\t\t\t\t\t        <h5> 讲师： <a href="#">' + result.data[i].teacher.teaName + '</a></h5>\n' +
+                                '\t\t\t\t\t\t    </div>\n' +
+                                '\t\t\t\t\t\t</div>\n' +
+                                '\t\t\t\t\t</div>\n'
+                        row.innerHTML += rowHtml;
+                        // alert(result.data[i].cat2Name);
+
+					}
+
+                    // document.getElementById('ckin').src = result.obj.vidVideoUrl;
+                    // document.getElementById('zycy').value = result.obj.id;
+
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        })
+    }
+</script>
+
+</html>

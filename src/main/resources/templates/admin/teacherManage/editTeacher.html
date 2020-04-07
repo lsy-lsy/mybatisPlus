@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="margin-top: 50px">
+            <fieldset class="layui-elem-field">
+                <legend>教师管理 - 编辑教师</legend>
+                <div class="layui-field-box">
+                    <div>
+                        <form class="layui-form">
+                            <input type="hidden" disabled="disabled" th:value="${teacher.id}" name="id" required  lay-verify="required" placeholder="输入视频名称" autocomplete="off" class="layui-input">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" th:value="${teacher.teaName}" name="vidName" required  lay-verify="required" placeholder="输入教师名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">教师登陆名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="teaLoginName"  th:value="${teacher.teaLoginName}" placeholder="请输入内容" class="layui-input"/>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">密码框</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="teaPwd" th:value="${teacher.teaPwd}" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师性别</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="teaSex" value="男" title="男" th:checked="${teacher.teaSex} == '男'? true : false ">
+                                    <input type="radio" name="teaSex" value="女" title="女" th:checked="${teacher.teaSex }== '女'? true : false " >
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师邮箱</label>
+                                <div class="layui-input-block">
+                                    <input type="text"  th:value="${teacher.teaEmail}" name="B" required  lay-verify="required" placeholder="输入资料名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">手机号码</label>
+                                <div class="layui-input-block">
+                                    <input type="text" th:value="${teacher.teaNumber}" id="C" name="vidDatumUrl" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件 修改
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/teacher/edit',
+                data:data.field,
+                type:'put',
+                success:function (result) {
+                    if (result.success){
+                        layer.msg(result.message + "!正在刷新列表...");
+                        //关闭当前页面
+                        // layer.close(layer.index);
+                        //刷新父页面
+                        setTimeout("window.parent.location.reload()", 1200 )
+
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>
+</body>
+</html>

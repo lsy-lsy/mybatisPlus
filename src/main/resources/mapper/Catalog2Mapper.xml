@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatisplus.demo.mapper.Catalog2Mapper">
+
+    <!--查询老师发布的课程-->
+    <select id="getCat2Tea" resultMap="getCat2TeaMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+            cat2.*, catTea.*
+        FROM
+            catalog2 cat2
+        INNER JOIN cat2_tea_value catTea ON catTea.cat2_id = cat2.id
+        AND catTea.tea_id = #{id}
+    </select>
+
+    <resultMap id="getCat2TeaMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+
+        <collection property="cat2TeaValues" ofType="com.mybatisplus.demo.bean.CatTeaValue"  autoMapping="true">
+
+        </collection>
+
+
+
+    </resultMap>
+
+
+    <!--查询学生报名的课程-->
+    <select id="getCat2User" resultMap="getCat2UserMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+            SELECT
+             @rownum:=@rownum+1 AS 'order',
+                ca.*, catUse.*,te.*, ca.id as catId,catUse.id as catUseId , te.id as teaId
+            FROM
+             (SELECT @rownum:=0) r,
+                catalog2 ca
+            INNER JOIN cat2_use_value catUse ON ca.id = catUse.cat2_id
+            AND catUse.use_id = #{id}
+            LEFT JOIN cat2_tea_value catTea ON ca.id = catTea.cat2_id
+            AND catTea.tea_id = catUse.tea_id
+            LEFT JOIN teacher te ON te.id = catTea.tea_id
+
+    </select>
+
+
+    <resultMap id="getCat2UserMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+        <id column="order" property="order"></id>
+        <collection property="cat2UseValues" ofType="com.mybatisplus.demo.bean.Cat2UseValue" autoMapping="true">
+
+                <id column="catUseId" property="id"></id>
+        </collection>
+
+        <collection  property="teacher" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+                <id column="teaId" property="id"></id>
+        </collection>
+
+    </resultMap>
+
+
+    <!--查询课程信息和老师名字-->
+    <select id="getCat2TeacherList" resultMap="getCat2TeacherListMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+        @rownum:=@rownum+1 AS 'order',
+            ca.*, tea.* , ca.id as catId,tea.id as teaId
+        FROM
+        (SELECT @rownum:=0) r,
+            catalog2 ca
+        INNER JOIN cat2_tea_value catTea ON ca.id = catTea.cat2_id
+        LEFT JOIN teacher tea ON tea.id = catTea.tea_id
+        ORDER BY RAND()
+        LIMIT 6
+
+    </select>
+
+    <resultMap id="getCat2TeacherListMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+        <id column="order" property="order"></id>
+
+
+        <collection  property="teacher" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+
+            <id column="teaId" property="id"></id>
+            <result column="order" property="order"></result>
+        </collection>
+
+    </resultMap>
+
+
+
+
+    <!--根据系列cat2id和教师id查询 教师发布的视频-->
+    <select id="getVideoTeacherValue" resultMap="getVideoTeacherValueMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+        @rownum:=@rownum+1 AS 'order',
+            vi.*, tea.*, vidTea.*, catTea.*,catTea.id as catTeaId,vi.id AS vidId,
+            tea.id AS teaId,
+            vidTea.id AS vidTeaId
+        FROM
+        (SELECT @rownum:=0) r,
+            video vi
+        LEFT JOIN cat2_tea_value catTea ON vi.catalog2_id = catTea.cat2_id
+        AND vi.catalog2_id = #{param1}
+        LEFT JOIN vid_tea_value vidTea ON vi.id = vidTea.vid_id
+        INNER JOIN teacher tea ON tea.id = vidTea.tea_id
+        AND tea.id = catTea.tea_id
+        AND tea.id =  #{param2}
+
+
+    </select>
+
+
+    <resultMap id="getVideoTeacherValueMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+
+        <id column="catTeaId" property="id"></id>
+        <result column="order" property="order"></result>
+        <collection property="teacherList" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+            <id column="teaId" property="id"></id>
+            <result column="order" property="order"></result>
+        </collection>
+
+        <collection property="videoList" ofType="com.mybatisplus.demo.bean.Video" autoMapping="true">
+            <id column="vidId" property="id"></id>
+            <result column="order" property="order"></result>
+        </collection>
+
+    </resultMap>
+
+
+
+
+    <!--根据cat1Id查询二级目录跟发布二级课程教师-->
+    <select id="getCat1Cata2log" resultMap="getCat1Cata2logMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+          @rownum:=@rownum+1 AS 'order',
+          cat1.*,cat1.Id AS cat1Id,
+          cat2.*,cat2.Id AS cat2Id ,
+          cat2Tea.*,cat2Tea.Id AS cat2TeaId,
+          tea.*,tea.Id AS teaId
+        FROM
+         (SELECT @rownum:=0) r,
+          catalog1 cat1
+        LEFT JOIN catalog2 cat2 ON cat1.id = cat2.catalog1_id
+        INNER JOIN cat2_tea_value cat2Tea ON cat2Tea.cat2_id = cat2.id
+        INNER JOIN teacher tea ON tea.id =  cat2Tea.tea_id
+
+        AND cat1.id =#{param1}
+    </select>
+
+    <resultMap id="getCat1Cata2logMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+        <id column="order" property="order"></id>
+        <id column="cat2Id" property="id"></id>
+
+        <collection property="teacher" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+            <id column="teaId" property="id"></id>
+            <id column="order" property="order"></id>
+        </collection>
+
+    </resultMap>
+
+
+    <!--二级目录并有老师发布的课程-->
+    <select id="getCat1Cata2logAll" resultMap="getCat1Cata2logAllMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+          @rownum:=@rownum+1 AS 'order',
+          cat1.*,cat1.Id AS cat1Id,
+          cat2.*,cat2.Id AS cat2Id ,
+          cat2Tea.*,cat2Tea.Id AS cat2TeaId,
+          tea.*,tea.Id AS teaId
+        FROM
+         (SELECT @rownum:=0) r,
+          catalog1 cat1
+        LEFT JOIN catalog2 cat2 ON cat1.id = cat2.catalog1_id
+        <if test="cat2Name != null and cat2Name!=''">
+            AND  cat2.cat2_name LIKE  '%${param1}%'
+        </if>
+        INNER JOIN cat2_tea_value cat2Tea ON cat2Tea.cat2_id = cat2.id
+        INNER JOIN teacher tea ON tea.id =  cat2Tea.tea_id
+    </select>
+
+    <resultMap id="getCat1Cata2logAllMap" type="com.mybatisplus.demo.bean.Catalog2" autoMapping="true">
+        <id column="order" property="order"></id>
+        <id column="cat2Id" property="id"></id>
+
+        <collection property="teacher" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+            <id column="teaId" property="id"></id>
+            <id column="order" property="order"></id>
+        </collection>
+
+    </resultMap>
+
+
+</mapper>
+

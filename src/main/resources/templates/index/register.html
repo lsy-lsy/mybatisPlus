@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>注册页面</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="height: 800px;margin-top: 50px">
+            <fieldset class="layui-elem-field">
+                <legend>用户注册</legend>
+                <div class="layui-field-box">
+                    <div >
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入登陆名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="useLoginName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入姓名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="useName" required  lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">密码</label>
+                                <div class="layui-input-block">
+                                    <input type="password" name="usePwd" required lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">性别</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="useSex" value="男" title="男">
+                                    <input type="radio" name="useSex" value="女" title="女" checked>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">邮箱</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="useEmail" required  lay-verify="email" placeholder="请输入标题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">联系方式</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="useNumber" required lay-verify="required|phone" placeholder="请输入联系方式" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-upload">
+                                <label class="layui-form-label">上传头像</label>
+                                <button type="button" class="layui-btn" id="test1">点击上传</button>
+                                <div class="layui-upload-list">
+                                    <img class="layui-upload-img"  id="demo1">
+                                    <input type="hidden" id="useImage" name="useImage">
+                                    <p id="demoText"></p>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">个性签名</label>
+                                <div class="layui-input-block">
+                                    <textarea name="useSignature"  text="欢迎来到我的页面！" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即注册</button>
+                                    <a href="/index/lo"><button  class="layui-btn layui-btn-normal">返回登陆</button></a>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置表单</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+        layui.config({
+            base : "js/"
+        }).use(['form','layer'],function(){
+            var form = layui.form;
+            // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+            $ = layui.jquery;
+            //登录按钮事件
+            form.on("submit(formDemo)",function(data){
+                $.ajax({
+                    url:'/index/saveUser',
+                    data:data.field,
+                    type:'post',
+                    success:function (result) {
+                        if (result.success){
+
+                            layer.msg(result.message + "正在跳转..");
+                            //刷新父页面
+                            setTimeout("window.parent.location.reload()", 1200 );
+
+                        }else{
+                            layer.msg(result.message);
+                        }
+                    }
+                })
+                return false;
+            })
+
+            //头像上传
+            var uploadInst = upload.render({
+                elem: '#test1'
+                ,url: '/user/uploadImg/'
+                ,before: function(obj){
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function(index, file, result){
+
+                        $('#demo1').attr('src', result); //图片链接（base64）
+
+                    });
+
+                }
+                ,done: function(res){
+                    if(res){
+                        // alert(res.message);
+                        $("#useImage").attr("value",res.message);
+                        layer.msg('封面上传成功');
+                    }else {
+                        return layer.msg('封面上传失败');
+                    }
+                    //上传成功
+                }
+                ,error: function(){
+                    //演示失败状态，并实现重传
+                    var demoText = $('#demoText');
+                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                    demoText.find('.demo-reload').on('click', function(){
+                        uploadInst.upload();
+                    });
+                }
+            });
+
+        })
+    })
+
+</script>
+</body>
+</html>

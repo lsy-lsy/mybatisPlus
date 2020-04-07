@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>教师添加课题</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" >
+            <fieldset class="layui-elem-field">
+                <legend>添加课题</legend>
+                <div class="layui-field-box">
+                    <div>
+                        <form class="layui-form">
+
+
+                            <input type="hidden" th:value="${vidId}" id="vidId" name="vidId">
+                            <input type="hidden" th:value="${session.teacher.id}" id="teaId" >
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入课题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" id="topName" name="topName" required  lay-verify="required" placeholder="输入课题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案A</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="A" required lay-verify="required" placeholder="输入答案A" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案B</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="B" required lay-verify="required" placeholder="输入答案B" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案C</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="C" required lay-verify="required" placeholder="输入答案C" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">输入答案D</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="D" required lay-verify="required" placeholder="输入答案D" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">选择正确答案</label>
+                                <div class="layui-input-inline">
+                                    <select  id="1"  name="ansCorrect" lay-filter="filterCat2Name" >
+                                        <option value="" >选择正确答案</option>
+                                        <option value="A" >A</option>
+                                        <option value="B" >B</option>
+                                        <option value="C" >C</option>
+                                        <option value="d" >D</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">答案解析</label>
+                                <div class="layui-input-block">
+                                    <textarea name="ansParse" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    var teaId = document.getElementById("teaId").value;
+    var vidId = document.getElementById("vidId").value;
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/teacherInd/saveTopicAns',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+
+                        layer.msg(result.message + "正在刷新列表..");
+                        //刷新父页面
+
+                        setTimeout( "history.back(-1)",1200);
+                        // setTimeout("window.location.href='/teacherInd/selectCourse?teaId='+teaId+'$vidId='+vidId", 1200);
+                    }else{
+                        layer.msg(result.message);
+                        if(result.message == "每个视频不能有相同的题目!"){
+                            $('#topName').focus();
+                        }
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><div class="layui-side-scroll">
+    <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+    <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+        <li class="layui-nav-item"><a class="layui-this" href="/admin/index">控制台</a></li>
+
+        <li class="layui-nav-item ">
+            <a href="javascript:;">用户管理</a>
+            <dl class="layui-nav-child">
+                <dd><a  href="/user/toUserList">用户列表</a></dd>
+            </dl>
+        </li>
+
+        <li class="layui-nav-item ">
+            <a href="javascript:;">教师管理</a>
+            <dl class="layui-nav-child">
+                <dd><a  href="/teacher/teacher">教师列表</a></dd>
+            </dl>
+        </li>
+
+
+        <li class="layui-nav-item">
+            <a href="javascript:;">视频管理</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/toCatalog1View">视频一级目录</a></dd>
+                <dd><a href="/catalog2/catalog2">视频二级目录</a></dd>
+                <dd><a href="/video/video">视频列表</a></dd>
+                <!--<dd><a href="adminRole.html">用户角色</a></dd>-->
+            </dl>
+        </li>
+
+        <li class="layui-nav-item">
+            <a href="javascript:;">题目管理</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/topic/toTopicList">视频题目</a></dd>
+            </dl>
+        </li>
+        <!--<li class="layui-nav-item">-->
+            <!--<a href="javascript:;">管理</a>-->
+            <!--<dl class="layui-nav-child">-->
+                <!--<dd><a href="member.html">会员列表</a></dd>-->
+            <!--</dl>-->
+        <!--</li>-->
+        <!--<li class="layui-nav-item">-->
+            <!--<a href="javascript:;">开发者工具</a>-->
+            <!--<dl class="layui-nav-child">-->
+                <!--<dd><a href="control.html">一键生成</a></dd>-->
+            <!--</dl>-->
+        <!--</li>-->
+        <!--<li class="layui-nav-item">-->
+            <!--<a href="javascript:;">集成Demo</a>-->
+            <!--<dl class="layui-nav-child">-->
+                <!--<dd><a href="upload.html">文件上传</a></dd>-->
+                <!--<dd><a href="upload.html">Execel导出</a></dd>-->
+            <!--</dl>-->
+        <!--</li>-->
+    </ul>
+</div>
+</body>
+</html>

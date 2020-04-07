@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" >
+            <fieldset class="layui-elem-field">
+                <legend>查询教师 更多信息</legend>
+                <div class="layui-field-box">
+                    <div>
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" disabled="disabled" th:value="${teacher.teaName}" name="vidName" required  lay-verify="required" placeholder="输入视频名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">教师登陆名</label>
+                                <div class="layui-input-block">
+                                    <textarea name="ansParse" disabled="disabled" th:text="${teacher.teaLoginName}" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师性别</label>
+                                <div class="layui-input-block">
+                                    <input type="text" disabled="disabled" th:value="${teacher.teaSex}" name="A" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">教师邮箱</label>
+                                <div class="layui-input-block">
+                                    <input type="text" disabled="disabled" th:value="${teacher.teaEmail}" name="B" required  lay-verify="required" placeholder="输入资料名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">手机号码</label>
+                                <div class="layui-input-block">
+                                 <input type="text" disabled="disabled"  th:value="${teacher.teaNumber}" id="C" name="vidDatumUrl" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">发布的系列</label>
+                                <div class="layui-input-block">
+                                    <span th:each="cat2 : ${catalog2List}" th:text="${cat2.cat2Name}+'。'"></span>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+</body>
+</html>

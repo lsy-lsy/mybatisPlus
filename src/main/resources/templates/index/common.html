@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <script type="text/javascript" src="/layui/layui.js"></script>
+</head>
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a href="#" class="navbar-brand"></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/index/in">首页</a></li>
+                    <li><a href="/index/search">课程中心</a></li>
+
+                    <li th:if="${session.user == null}"><a href="/index/lo">登录</a></li>
+                    <li th:if="${session.user == null}"><a href="/index/register">注册</a></li>
+
+                    <li  th:if="${session.user != null}">
+                        <input type="hidden" th:value="${session.user.id}" id="useId" >
+                        <a href="#"  s data-toggle="dropdown" class="dropdown-toggle"><span th:text=" ${session.user.useName}" ></span><b class="caret"></b></a>
+
+                        <ul class="dropdown-menu">
+                            <li><a th:href="@{/index/myindex(useId = ${session.user.id})}">进入个人中心</a></li>
+
+                            <li><a href="/index/logout">退出</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text"  id="cat2Name" class="form-control" placeholder="请输入课程名称">
+                    </div>
+                    <button class="btn btn-default" th:onclick="'javascript:search()'">搜索</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function search() {
+        var cat2Name = document.getElementById("cat2Name").value;
+        $.ajax({
+            url: '/index/getCat1Cata2logAll',
+            data: {cat2Name:cat2Name},
+            type: 'post',
+            success: function (result) {
+                if (result.success) {
+                    // alert(result.data);
+                    // window.location.href = "/index/search";
+                    row.innerHTML = "";
+                    for(var i in result.data) {
+                        var rowHtml = '\<div class="col-md-4">\n' +
+                            '\t\t\t\t\t\t<div class="wrap-vid">\n' +
+                            '\t\t\t\t\t\t    <div class="zoom-container">\n' +
+                            '\t\t\t\t\t\t        <div class="zoom-caption" >\n' +
+                            '\t\t\t\t\t\t            <span >精选课程</span>\n' +
+                            '\t\t\t\t\t\t            <a href="javascript:;" onclick="add(\''+result.data[i].id+"','" +  result.data[i].teacher.id +'\')">\n' +
+                            '\t\t\t\t\t\t            <i class="fa fa-plus-circle fa-5x" style="color: #fff"></i>\n' +
+                            '\t\t\t\t\t\t            </a>\n' +
+                            '\t\t\t\t\t\t            <p >' + result.data[i].cat2Name + '</p>\n' +
+                            '\t\t\t\t\t\t        </div>\n' +
+                            '\t\t\t\t\t\t        <img style="width: 270px;height: 152px;" src="' + result.data[i].cat2Img + '">\n' +
+                            '\t\t\t\t\t\t    </div>\n' +
+                            '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#"></a></h3>\n' +
+                            '\t\t\t\t\t\t    <h3 class="vid-name"><a href="#">' + result.data[i].cat2Name+ '</a></h3>\n'+
+                            '\t\t\t\t\t\t    <div class="info">\n' +
+                            '\t\t\t\t\t\t        <h5> 讲师： <a id="teaName" href="#">' + result.data[i].teacher.teaName + '</a></h5>\n' +
+                            '\t\t\t\t\t\t    </div>\n' +
+                            '\t\t\t\t\t\t</div>\n' +
+                            '\t\t\t\t\t</div>\n';
+
+
+                        row.innerHTML += rowHtml;
+
+
+                    }
+
+                } else {
+                    layer.msg(result.message);
+                }
+                return false;
+            }
+        })
+
+    }
+</script>

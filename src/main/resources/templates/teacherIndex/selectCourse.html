@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>教师查询课程视频</title>
+	<link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+	<div class="layui-row">
+		<div class="layui-col-lg12" style="height: 800px;">
+			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+				<legend>查询课程视频</legend>
+				<!--th:href="@{/teacherInd/selectCourse(cat2Id = ${cat2.id},-->
+				<a th:href="@{/teacherInd/index(teaId = ${session.teacher.id})}" ><button type="button" class="layui-btn layui-btn-normal">返回上一级</button></a>
+			</fieldset>
+				<div class="layui-form">
+					<table class="layui-table">
+						<colgroup>
+							<col width="150">
+							<col width="150">
+							<col width="200">
+							<col width="300">
+							<col >
+						</colgroup>
+						<thead >
+						<tr>
+							<th>视频序号</th>
+							<th>视频名称</th>
+							<th>视频地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody th:each="cat2 : ${catalog2List}">
+						<tr th:each="vid : ${cat2.videoList}">
+							<td th:text="${vid.id}"></td>
+							<td th:text="${vid.vidName}">贤心</td>
+							<td th:text="${vid.vidVideoUrl}">汉族</td>
+							<td>
+								<a th:href="@{/teacherInd/selectVideo(vidId = ${vid.id})}"><button type="button" class="layui-btn layui-btn-xs layui-btn-normal">查看详细</button></a>
+								<a th:href="@{/teacherInd/saveTopic(vidId = ${vid.id})}"><button type="button" class="layui-btn layui-btn-xs layui-btn-normal" >添加题目</button></a>
+								<a th:onclick="'javascript:delVideo(\''+${vid.id}+'\')'" ><button type="button" class="layui-btn layui-btn-xs layui-btn-normal">删除视频</button></a>
+								<!--th:href="@{/teacherInd/delVideo(vidId = ${vid.id})}"-->
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+		</div>
+
+	</div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+
+	// 删除请求
+    //点击获取视频
+    function delVideo(id){
+        var account = id;
+        var dati = document.getElementById("dati");
+        $.ajax({
+            url: '/teacherInd/delVideo',
+            data: {vid:account},
+            type: 'post',
+            success: function (result) {
+                if (result.success) {
+                    layer.msg(result.message + "正在刷新列表..");
+                    //刷新父页面
+                    setTimeout("location.reload() ", 1200 );
+                } else {
+                    layer.msg(result.message);
+                }
+            }
+        })
+    }
+
+
+//	var teaId = document.getElementById("teaId").value;
+//	alert(teaId);
+//    layui.use('upload', function(){
+//        var $ = layui.jquery
+//            ,upload = layui.upload;
+//        layui.config({
+//            base : "js/"
+//        }).use(['form','layer'],function(){
+//
+//            var form = layui.form;
+//            // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+//            $ = layui.jquery;
+//            //登录按钮事件
+//            form.on("submit(formDemo)",function(data){
+//                $.ajax({
+//                    url:'/teacherInd/savaCat2',
+//                    data:data.field,
+//                    type:'post',
+//                    success:function (result) {
+//                        if (result.success){
+//                            layer.msg(result.message + "正在跳转..");
+//                            //刷新父页面
+//                            setTimeout("window.location.href='/teacherInd/index?teaId='+teaId", 1200 );
+//                        }else{
+//                            layer.msg(result.message);
+//                        }
+//                    }
+//                })
+//                return false;
+//            });
+//
+//            //普通图片上传
+//            var uploadInst = upload.render({
+//                elem: '#test1'
+//                ,url: '/catalog2/upload/'
+//                ,before: function(obj){
+//                    //预读本地文件示例，不支持ie8
+//                    obj.preview(function(index, file, result){
+//
+//                        $('#demo1').attr('src', result); //图片链接（base64）
+//
+//                    });
+//
+//                }
+//                ,done: function(res){
+//                    if(res){
+//                        // alert(res.message);
+//                        $("#cat2Img").attr("value",res.message);
+//                        layer.msg('封面上传成功');
+//                    }else {
+//                        return layer.msg('封面上传失败');
+//                    }
+//                    //上传成功
+//                }
+//                ,error: function(){
+//                    //演示失败状态，并实现重传
+//                    var demoText = $('#demoText');
+//                    demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+//                    demoText.find('.demo-reload').on('click', function(){
+//                        uploadInst.upload();
+//                    });
+//                }
+//            });
+//
+//        });
+//
+//    })
+
+</script>
+</body>
+</html>

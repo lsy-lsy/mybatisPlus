@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="height: 800px;">
+            <fieldset class="layui-elem-field">
+                <legend>目录管理 - 新增一级目录</legend>
+                <div class="layui-field-box">
+                    <div style="margin-left: 150px;">
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">一级目录</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="cat1Name" required  lay-verify="required" placeholder="请输入一级目录" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/saveCatalog',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+                        // layer.msg("保存成功!");
+                        //关闭当前页面
+                        layer.close(layer.index);
+                        //刷新父页面
+                        window.parent.location.reload();
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>
+</body>
+</html>

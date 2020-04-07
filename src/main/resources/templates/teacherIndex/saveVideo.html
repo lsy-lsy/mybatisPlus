@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>教师添加视频</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12">
+            <fieldset class="layui-elem-field">
+                <input type="hidden" th:value="${session.teacher.id}" id="teaId" >
+                <legend>教师添加视频</legend>
+                <div class="layui-field-box">
+                    <div >
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">视频名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="vidName" required  lay-verify="required" placeholder="输入视频名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">上传视频</label>
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn" id="test5"><i class="layui-icon"></i>上传视频</button>
+                                    <input type="hidden" id="vidVideoUrl" name="vidVideoUrl" required  lay-verify="required" placeholder="上传视频" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">资料名称</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="vidDatum" required  lay-verify="required" placeholder="输入资料名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">资料上传</label>
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn" id="test3"><i class="layui-icon"></i>上传文件</button>
+                                    <input type="hidden" id="vidDatumUrl" name="vidDatumUrl" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">视频介绍</label>
+                                <div class="layui-input-block">
+                                    <textarea name="vidIntroduce" placeholder="请输入视频介绍" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="vidJudge" required  lay-verify="required" placeholder="输入选择题" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择题答案:</label>
+                                <div class="layui-input-block">
+                                    <input type="radio" name="vidRight" value="1" title="对" checked="">
+                                    <input type="radio" name="vidRight" value="0" title="错">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">设置弹出选择题时间:</label>
+                                <div class="layui-input-inline">
+                                    <select  name="vidPopupTime" >
+                                        <option value="60">一分钟</option>
+                                        <option value="120">二分钟</option>
+                                        <option value="180">三分钟</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">一级分类:</label>
+                                <div class="layui-input-inline">
+                                    <input type="hidden" name="cat1Name" disabled="disabled" th:value="${catalog1ById.id}" >
+                                    <input type="text" disabled="disabled" th:value="${catalog1ById.cat1Name}" required lay-verify="required"  autocomplete="off" class="layui-input" >
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">二级分类:</label>
+                                <div class="layui-input-inline">
+                                    <input type="hidden" name="catalog2Id"  disabled="disabled" th:value="${catalog2.id}" >
+                                    <input type="text" disabled="disabled" th:value="${catalog2.cat2Name}" required lay-verify="required"  autocomplete="off" class="layui-input" >
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">选择教师:</label>
+                                <div class="layui-input-inline">
+                                    <input type="hidden" name="teaId" th:value="${teacher.id}" >
+                                    <input type="text"disabled="disabled"  th:value="${teacher.teaName}"required lay-verify="required"  autocomplete="off" class="layui-input" >
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    var teaId = document.getElementById("teaId").value;
+    // alert(teaId);
+    layui.config({
+        base : "js/"
+    }).use(['upload','form','layer'],function(){
+        var form = layui.form
+            ,upload = layui.upload;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/video/save',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+                        layer.msg(result.message + "正在刷新列表..");
+                        //刷新父页面
+                        setTimeout("window.location.href='/teacherInd/index?teaId='+teaId, 1200" );
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            });
+            return false;
+        });
+
+        // 上传视频
+        upload.render({
+                elem: '#test5'
+                ,url: '/video/saveFile'
+                ,accept: 'file' //视频
+                ,exts: 'mp4|avi'
+                ,type: 'post'
+                ,done: function(result){
+                    if(result.success){
+                        layer.msg("上传视频成功！", {icon: 6});
+                        $("#vidVideoUrl").attr("value",result.message);
+                        // alert("上传成功！", {icon: 6});
+                        // console.log(result.message)
+                    }else{
+                        layer.msg("上传视频失败！", {icon:5});
+                    }
+                }
+        });
+        //指定允许上传的文件类型
+        upload.render({
+            elem: '#test3'
+            ,url: '/video/saveFile'
+            ,accept: 'file' //普通文件
+            ,exts: 'md|docx|doc|xls|zip|7z|ppt|pptx'
+            ,type: 'post'
+            ,size: 268290815 //限制文件大小，单位 KB
+            ,done: function(result){
+                if(result.success){
+                    layer.msg("上传资料文件成功！", {icon: 6});
+                    $("#vidDatumUrl").attr("value",result.message);
+                    // alert("上传成功！", {icon: 6});
+                    // console.log(result.message)
+                }else{
+                    layer.msg("上传资料文件失败！", {icon:5});
+                }
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

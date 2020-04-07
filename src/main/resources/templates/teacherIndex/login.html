@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+		<meta charset="utf-8">
+		<link href="/css/teacherStyle.css" rel='stylesheet' type='text/css' />
+		<link rel="stylesheet" href="/layui/css/layui.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	 <!-----start-main---->
+	 <div class="main">
+		<div class="login-form">
+			<h1>教师登陆</h1>
+					<div class="head">
+						<img src="/images/user.png" alt=""/>
+					</div>
+				<form class="layui-form">
+						<input type="text" name="teaLoginName" placeholder="用户名">
+						<input type="password" name="teaPwd" placeholder="密码"  >
+						<div class="submit">
+							<button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+
+						</div>
+				</form>
+			</div>
+		</div>
+			 <!-----//end-main---->
+		 		
+<div style="display:none"><script src='http://v7.cnzz.com/stat.php?id=155540&web_id=155540' language='JavaScript' charset='gb2312'></script></div>
+</body>
+
+<script type="text/javascript" src="/layui/layui.js"></script>
+<!--<script type="text/javascript" src="/js/login.js"></script>-->
+<script>
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+
+        //登录按钮事件
+        form.on("submit(login)",function(data){
+            $.ajax({
+                url:'/teacherInd/login',
+                data:data.field,
+                type:'post',
+                success:function (result) {
+                    if (result.success){
+                        layer.msg("登陆成功！");
+
+                        alert( result.obj.id)
+                        location.href = "/teacherInd/index?teaId="+result.obj.id;
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>
+</html>

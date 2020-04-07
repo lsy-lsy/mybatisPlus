@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-lg12" style="height: 800px;">
+            <fieldset class="layui-elem-field">
+                <legend>修改课题 - 编辑课题</legend>
+                <div class="layui-field-box">
+                    <div>
+                        <form class="layui-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">视频名称</label>
+                                <div class="layui-input-block">
+                                    <!--视频id-->
+                                    <input type="hidden"  th:value="${video.id}" name="vidId" >
+                                    <input type="text" disabled="disabled"  th:value="${video.vidName}" name="vidName" required  lay-verify="required" placeholder="输入视频名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <input type="hidden" th:value="${topic.id}" name="id" >
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">课题问题</label>
+                                <div class="layui-input-block">
+                                    <textarea name="topName"  th:text="${topic.topName}" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+
+                            <input type="hidden" th:value="${answer.id}" name="ansId" >
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">课题答案A</label>
+                                <div class="layui-input-block">
+                                    <input type="text" th:value="${answer.A}" name="A" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">课题答案B</label>
+                                <div class="layui-input-block">
+                                    <input type="text"  th:value="${answer.B}" name="B" required  lay-verify="required" placeholder="输入资料名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">课题答案C</label>
+                                <div class="layui-input-block">
+                                    <input type="text"  th:value="${answer.C}" name="C"  required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">课题答案D</label>
+                                <div class="layui-input-block">
+                                    <input type="text"  th:value="${answer.D}" id="D" name="D" required lay-verify="required" placeholder="视频介绍" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item" >
+                                <label class="layui-form-label">选择正确答案</label>
+                                <div class="layui-input-block">
+                                    <select  id="1"  name="ansCorrect" lay-filter="filterCat2Name" >
+                                        <option th:text="${answer.ansCorrect}"></option>
+                                        <option value="A" >A</option>
+                                        <option value="B" >B</option>
+                                        <option value="C" >C</option>
+                                        <option value="d" >D</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-form-text">
+                                <label class="layui-form-label">答案解析</label>
+                                <div class="layui-input-block">
+                                    <textarea name="ansParse" th:text="${answer.ansParse}" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="/js/jquery.min.js"></script>
+<script type="text/javascript" src="/layui/layui.js"></script>
+<script type="text/javascript" src="/js/dw_form_submit.js"></script>
+
+
+<script>
+    layui.config({
+        base : "js/"
+    }).use(['form','layer'],function(){
+        var form = layui.form;
+        // 	layer = parent.layer === undefined ? layui.layer : parent.layer,
+        $ = layui.jquery;
+        //登录按钮事件 修改
+        form.on("submit(formDemo)",function(data){
+            $.ajax({
+                url:'/topic/editTopic',
+                data:data.field,
+                type:'DELETE',
+                success:function (result) {
+                    if (result.success){
+                        layer.msg(result.message + "正在刷新列表..");
+                        //刷新父页面
+                        setTimeout("window.parent.location.reload()", 1200 );
+                    }else{
+                        layer.msg(result.message);
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+</script>
+</body>
+</html>

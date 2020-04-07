@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatisplus.demo.mapper.CatTeaValueMapper">
+
+    <!--根据二级目录查询发布的系列课程的教师-->
+
+    <!--根据学生查询学生报名课程的信息 包括发布课程教师-->
+    <select id="getCatalog2Teacher" resultMap="getCatalog2TeacherMap" parameterType="com.mybatisplus.demo.bean.Catalog2">
+
+        SELECT
+            te.*, cat2Tea.*,te.id AS teaId,cat2Tea.id AS cat2Id
+        FROM
+            cat2_tea_value cat2Tea
+        INNER  JOIN teacher te ON te.id = cat2Tea.tea_id
+        AND cat2Tea.cat2_id = #{id}
+
+
+    </select>
+
+
+    <resultMap id="getCatalog2TeacherMap" type="com.mybatisplus.demo.bean.CatTeaValue" autoMapping="true">
+        <id column="cat2Id" property="id"></id>
+        <collection property="teacherList" ofType="com.mybatisplus.demo.bean.Teacher" autoMapping="true">
+            <id column="teaId" property="id"></id>
+        </collection>
+
+    </resultMap>
+
+
+
+
+</mapper>

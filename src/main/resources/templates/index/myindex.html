@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>我的个人中心</title>
+	<link rel="stylesheet" type="text/css" href="/index/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/style.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/index/css/myindex.css">
+	<script type="text/javascript" src="/index/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/index/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/layui/layui.js"></script>
+</head>
+<body>
+<head th:include="index/common">
+
+	<div class="container" style="margin-top:50px;display: flex;">
+		<div class="con-left">
+			<div class="personalInfor" th:if="${session.user != null}">
+				<img th:src="${session.user.useImage}" alt="">
+				<p   th:text="${session.user.useName}">姓名</p>
+			</div>
+			<ul class="list-group">
+				<a href=""><li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i>课程</li></a>
+				<a href=""><li class="list-group-item"><i class="fa fa-graduation-cap" aria-hidden="true"></i>修改个人信息</li></a>
+			</ul>
+		</div>
+		<div class="con-right">
+			<div class="header-title">
+				<h2>我学的课程<a href="/index/search"><i class="fa fa-plus" aria-hidden="true">添加课程</i></a></h2>
+			</div>
+			<div class="box-content rightbox">
+				<div class="row">
+					<div class="col-md-4" th:each="cat2 : ${catalog2List}">
+						<div class="wrap-vid" th:each="tea : ${cat2.teacher}">
+						    <div class="zoom-container">
+						        <div class="zoom-caption">
+						            <span>视频分类</span>
+						            <a th:href="@{/index/info(cat2Id = ${cat2.id},teaId = ${tea.id})}">
+						                <i class="fa fa-play-circle-o fa-5x" style="color: #fff"></i>
+						            </a>
+						            <p th:text="${cat2.cat2Name}" >视频名称</p>
+						        </div>
+						        <img style="width: 270px;height: 167px;" th:src="${cat2.cat2Img}"  src="/index/images/slide1.jpg">
+						    </div>
+							<h3 class="vid-name"><a th:href="@{/index/info(cat2Id = ${cat2.id},teaId = ${tea.id})}" th:text="${cat2.cat2Name}"  >课程系列</a></h3>
+							<div class="info">
+								<h5>讲师： <span th:text="${tea.teaName}">Kelvin</span>
+									<a href="#" style="float: right;margin-top: 5px;"><li  th:onclick="'javascript:delCat2(\''+${cat2.id}+'\',\''+${session.user.id}+'\')'">取消报名</li></a></h5>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:include="index/bottom"/>
+
+</body>
+<script>
+    		function delCat2(cat2,useId) {
+                $.ajax({
+                    url: '/index/deleteCat2',
+                    data: {cat2:cat2,useId:useId},
+                    type: 'post',
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message + "正在刷新..");
+                            //刷新父页面
+                            setTimeout("location.reload()", 1200);
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                })
+            }
+</script>
+</html>

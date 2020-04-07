@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatisplus.demo.mapper.VideoMapper">
+    <select id="getVidTea" resultMap="getVidTeaMap" parameterType="com.mybatisplus.demo.bean.Video">
+
+        SELECT
+	      vid.*,vidtea.*
+        FROM
+	      video vid
+        INNER  JOIN vid_tea_value vidtea ON vidtea.vid_id = vid.id
+        AND vidtea.tea_id = #{id}
+
+    </select>
+
+    <resultMap id="getVidTeaMap" type="com.mybatisplus.demo.bean.Video">
+        <id property="id" column="id"></id>
+        <result property="vidName" column="vid_name"></result>
+        <result property="vidVideoUrl" column="vid_video_url"></result>
+        <result property="vidIntroduce" column="vid_introduce"></result>
+        <result property="vidDatum" column="vid_datum"></result>
+        <result property="vidDatumUrl" column="vid_datum_url"></result>
+        <result property="catalog2Id" column="catalog2_id"></result>
+
+        <collection property="vidTeaValues" ofType="com.mybatisplus.demo.bean.VidTeaValue"></collection>
+    </resultMap>
+
+</mapper>

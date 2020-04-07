@@ -1,0 +1,40 @@
+
+video:
+  isRedisSession: false
+
+spring:
+  mvc:
+    view:
+      prefix: templates/
+      suffix: .html
+#redis设置
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/video?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    password: 123456
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#//取消缓存
+  thymeleaf:
+    cache: false
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+# 日志级别
+#  logging.level.root=info
+logging:
+  level:
+    root: debug
+  path: logs/
+  file: video.log
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.mybatisplus.demo.mapper

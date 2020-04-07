@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatisplus.demo.mapper.TopicMapper">
+
+    <select id="getTopic" resultMap="getTopicMap" parameterType="com.mybatisplus.demo.bean.Topic">
+        SELECT
+            @rownum:=@rownum+1 AS 'order',
+            top.*, ans.*,topUse.*,
+            top.id AS topId,
+            ans.id AS ansId,
+            topUse.id AS topUseId
+        FROM
+            (SELECT @rownum:=0) r,
+            topic top
+        INNER JOIN answer ans ON top.id = ans.top_id
+        AND top.vid_id = #{param1}
+        LEFT JOIN top_use_value topUse ON topUse.top_id = top.id
+        AND topUse.use_id = #{param2}
+    </select>
+
+    <resultMap id="getTopicMap" type="com.mybatisplus.demo.bean.Topic" autoMapping="true">
+        <id column="topId" property="id"></id>
+        <collection property="answer" ofType="com.mybatisplus.demo.bean.Answer" autoMapping="true">
+            <id column="ansId" property="id"></id>
+            <result column="order" property="order"></result>
+        </collection>
+
+        <collection property="topUseValue" ofType="com.mybatisplus.demo.bean.TopUseValue" autoMapping="true">
+            <id column="topUseId" property="id"></id>
+            <!--<result column="order" property="order"></result>-->
+        </collection>
+
+    </resultMap>
+</mapper>
